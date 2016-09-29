@@ -47,6 +47,12 @@
       <artifactId>jackson-mapper-asl</artifactId>
       <version>1.9.12</version>
     </dependency>
+    <!--hibernate-->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>4.3.9.Final</version>
+    </dependency>
     <!--spring-->
     <dependency>
       <groupId>org.springframework</groupId>
