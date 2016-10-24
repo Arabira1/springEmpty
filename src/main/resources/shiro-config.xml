@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <!--添加单realm，多realm使用realms-->
+        <property name="realm" ref="myRealm"/>
+    </bean>
+
+    <!--shiro的核心部分-->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <!--设定登录成功后调转的url-->
+        <property name="successUrl" value="/"/>
+        <!--设定登录失败后的url调整地址-->
+        <property name="unauthorizedUrl" value="/denize"/>
+        <property name="filterChainDefinitions">
+            <!--url权限拦截-->
+            <value>
+                /logOut = logout<!--登出操作，自动清除session中自动添加的数据-->
+                /user/add = anon
+            </value>
+        </property>
+    </bean>
+
+    <!--验证匹配Matcher部分-->
+    <bean id="credentialsMatcher" class="com.spring.Shiro.RetryLimityMatcher">
+        <constructor-arg name="cacheFile" value="ehcache.xml"/>
+        <constructor-arg name="cacheName" value="passwordRetryCache"/>
+        <!--以下参数必须和Service层的add方法中的SimpleHash中的参数一一对应-->
+        <!--加密方式-->
+        <property name="hashAlgorithmName" value="md5"/>
+        <!--加密次数-->
+        <property name="hashIterations" value="2"/>
+        <!--启用16进制编码,即加密后以16进制输出-->
+        <property name="storedCredentialsHexEncoded" value="true"/>
+    </bean>
+
+    <bean id="myRealm" class="com.spring.Shiro.MyRealm">
+        <property name="credentialsMatcher" ref="credentialsMatcher"/>
+    </bean>
+
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+</beans>

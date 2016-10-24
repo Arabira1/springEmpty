@@ -12,7 +12,6 @@
 
     <!--扫描Mapper配置文件-->
     <mappers>
-        <mapper resource="Mapper\NoteMapper.xml"/>
-        <mapper resource="Mapper\Note2Mapper.xml"/>
+        <mapper resource="Mapper\UserMapper.xml"/>
     </mappers>
 </configuration>

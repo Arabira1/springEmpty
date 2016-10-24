@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.Dao.UserDao">
+
+    <resultMap id="userEntity" type="com.spring.Entity.UserEntity">
+        <id column="u_id" property="id"/>
+        <result column="user_name" property="userName"/>
+        <result column="login_username" property="loginName"/>
+        <result column="password" property="passWord"/>
+        <result column="salt" property="primarySalt"/>
+        <result column="locked" property="locked"/>
+    </resultMap>
+
+    <select id="findUser" parameterType="String" resultMap="userEntity">
+        SELECT * FROM user WHERE login_username = #{userName};
+    </select>
+
+    <select id="findById" parameterType="Long" resultMap="userEntity">
+        SELECT * FROM user WHERE u_id = #{id};
+    </select>
+
+    <insert id="addUser" parameterType="user">
+        INSERT INTO user (u_id, login_username, user_name, password, salt, locked) VALUES (#{id}, #{loginName}, 'user', #{passWord}, #{primarySalt}, #{locked});
+    </insert>
+
+    <delete id="delUser" parameterType="user">
+        DELETE FROM user WHERE u_id = #{id};
+    </delete>
+
+    <update id="updateName">
+        UPDATE user SET username = #{newName} WHERE u_id = #{id};
+    </update>
+
+    <update id="updatePassword">
+        UPDATE user SET password = #{newPassword}
+          WHERE u_id = #{id} AND password = #{oldPassword};
+    </update>
+
+</mapper>

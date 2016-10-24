@@ -10,41 +10,54 @@ Target Server Type    : MYSQL
 Target Server Version : 50624
 File Encoding         : 65001
 
-Date: 2016-10-09 22:06:15
+Date: 2016-10-24 11:37:35
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for `test`
+-- Table structure for `role`
 -- ----------------------------
-DROP TABLE IF EXISTS `test`;
-CREATE TABLE `test` (
-  `id` varchar(200) NOT NULL,
-  `note2` int(20) DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  PRIMARY KEY (`id`)
+DROP TABLE IF EXISTS `role`;
+CREATE TABLE `role` (
+  `r_id` bigint(255) NOT NULL DEFAULT '0',
+  `role` text,
+  `description` text,
+  `available` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`r_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of test
+-- Records of role
 -- ----------------------------
-INSERT INTO `test` VALUES ('1', '123456', '2013-03-02');
-INSERT INTO `test` VALUES ('2', '22223323', '2013-02-05');
 
 -- ----------------------------
--- Table structure for `test2`
+-- Table structure for `user`
 -- ----------------------------
-DROP TABLE IF EXISTS `test2`;
-CREATE TABLE `test2` (
-  `id` int(20) NOT NULL AUTO_INCREMENT,
-  `note` varchar(200) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
+  `u_id` bigint(255) NOT NULL DEFAULT '0',
+  `user_name` varchar(255) DEFAULT NULL,
+  `password` text,
+  `salt` text,
+  `locked` tinyint(1) DEFAULT NULL,
+  `login_username` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`u_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of test2
+-- Records of user
 -- ----------------------------
-INSERT INTO `test2` VALUES ('1', 'note1');
-INSERT INTO `test2` VALUES ('2', 'default');
-INSERT INTO `test2` VALUES ('3', 'default');
+
+-- ----------------------------
+-- Table structure for `user_role`
+-- ----------------------------
+DROP TABLE IF EXISTS `user_role`;
+CREATE TABLE `user_role` (
+  `userId` bigint(255) DEFAULT NULL,
+  `roleId` bigint(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of user_role
+-- ----------------------------
