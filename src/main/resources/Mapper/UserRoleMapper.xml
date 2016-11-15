@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.Dao.UserRoleDao">
+    <resultMap id="userRoleEntity" type="com.spring.Entity.UserRoleEntity">
+        <result column="userId" property="forUserId"/>
+        <result column="roleId" property="forRoleId"/>
+        <result column="primary_role" property="primary"/>
+    </resultMap>
+    <select id="findUserAndRole" parameterType="String" resultMap="userRoleEntity">
+        SELECT * FROM user_role WHERE userId =
+                (SELECT u_id FROM user WHERE login_username = #{userName});
+    </select>
+</mapper>

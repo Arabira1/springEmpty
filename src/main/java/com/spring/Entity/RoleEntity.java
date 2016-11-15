@@ -12,6 +12,7 @@ public class RoleEntity {
     private String role;
     private String description;
     private boolean available;
+    private UserRoleEntity userRoleEntity;
 
     public Long getRoleId() {
         return roleId;
@@ -43,5 +44,13 @@ public class RoleEntity {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public UserRoleEntity getUserRoleEntity() {
+        return userRoleEntity;
+    }
+
+    public void setUserRoleEntity(UserRoleEntity userRoleEntity) {
+        this.userRoleEntity = userRoleEntity;
     }
 }

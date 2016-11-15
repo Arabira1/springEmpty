@@ -13,13 +13,17 @@
         <property name="securityManager" ref="securityManager"/>
         <!--设定登录成功后调转的url-->
         <property name="successUrl" value="/"/>
+        <property name="loginUrl" value="/denied"/>
         <!--设定登录失败后的url调整地址-->
-        <property name="unauthorizedUrl" value="/denize"/>
+        <property name="unauthorizedUrl" value="/denied"/>
         <property name="filterChainDefinitions">
             <!--url权限拦截-->
             <value>
                 /logOut = logout<!--登出操作，自动清除session中自动添加的数据-->
-                /user/add = anon
+                /user/add = roles[admin]
+                /user/find = authc, perms[user:find]
+                /user/update = authc, perms[user:update]
+                /user/delete = roles[admin]
             </value>
         </property>
     </bean>

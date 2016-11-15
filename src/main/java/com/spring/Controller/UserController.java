@@ -1,5 +1,6 @@
 package com.spring.Controller;
 
+import com.spring.Entity.RoleEntity;
 import com.spring.Entity.UserEntity;
 import com.spring.Service.UserService;
 import org.apache.shiro.SecurityUtils;
@@ -24,15 +25,22 @@ public class UserController {
     private UserService userService;
     private Map map;
 
+    /**
+     * @description 用户登录
+     * @param userEntity
+     * @param session
+     * @return map
+     */
     @RequestMapping("/signin")
     @ResponseBody
-    public Map login(UserEntity userEntity){
+    public Map login(UserEntity userEntity, HttpSession session){
         map = new HashMap();
-        //创建
+        //创建subject
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(userEntity.getLoginName(), userEntity.getPassWord());
         try {
             subject.login(token);
+            session.setAttribute("login", userEntity.getLoginName());
             map.put("status",true);
             map.put("description", "登陆成功");
         }
@@ -55,12 +63,88 @@ public class UserController {
         return map;
     }
 
+    /**
+     * @description 添加用户操作
+     * @param userEntity
+     * @return map
+     */
     @RequestMapping("/add")
     @ResponseBody
     public Map add(UserEntity userEntity) {
         map = new HashMap();
         String message = userService.add(userEntity);
         map.put("description", message);
+        return map;
+    }
+
+    /**
+     * @description
+     * @param userName
+     * @return map
+     * @throws Exception
+     */
+    @RequestMapping("/find")
+    @ResponseBody
+    public Map find(String userName) throws Exception {
+        map = new HashMap();
+        UserEntity userEntity = userService.findByName(userName);
+        //密码进行处理
+        userEntity.setPassWord("******");
+        map.put("status", true);
+        map.put("body", userEntity);
+        return map;
+    }
+
+    /**
+     * @description 更新用户信息
+     * @param userEntity
+     * @param session
+     * @param oldPassword
+     * @return map
+     */
+    @RequestMapping("/update")
+    @ResponseBody
+    public Map update(UserEntity userEntity, HttpSession session, String oldPassword) {
+        String loginName = (String) session.getAttribute("login");
+        map = new HashMap();
+        if (!userEntity.getUserName().isEmpty()) {
+            boolean b = userService.updateUserName(loginName, userEntity.getUserName());
+            if (b) {
+                map.put("status",true);
+                map.put("description","ok");
+            }
+        }
+        else if (!userEntity.getPassWord().isEmpty()) {
+            boolean b = userService.updatePassword(loginName, oldPassword, userEntity.getPassWord());
+        }
+        else {
+            map.put("status", false);
+            map.put("description", "error");
+        }
+        return map;
+    }
+
+    /**
+     * @description 删除用户
+     * @param userId
+     * @param adminPassword
+     * @param session
+     * @return map
+     */
+    @RequestMapping("/delete")
+    @ResponseBody
+    public Map delete(long userId, String adminPassword, HttpSession session) {
+        map = new HashMap();
+        String loginName = (String) session.getAttribute("login");
+        boolean result = userService.delete(userId, loginName, adminPassword);
+        if (result) {
+            map.put("status",true);
+            map.put("description", "删除成功");
+        }
+        else {
+            map.put("status", false);
+            map.put("description", "删除失败");
+        }
         return map;
     }
 }

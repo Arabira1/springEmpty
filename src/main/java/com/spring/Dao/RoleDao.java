@@ -1,5 +1,6 @@
 package com.spring.Dao;
 
+
 import com.spring.Entity.RoleEntity;
 import com.spring.Entity.UserRoleEntity;
 import org.springframework.stereotype.Repository;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface RoleDao {
-    public RoleEntity findRole(String role);
+    public RoleEntity findRole(long role);
     public void addRole(RoleEntity roleEntity);
     public void delRole(RoleEntity roleEntity);
     public void updateRoleName(String roleName);

@@ -1,31 +1,54 @@
 package com.spring.Service;
 
+import com.spring.Dao.RoleDao;
 import com.spring.Dao.UserDao;
+import com.spring.Dao.UserRoleDao;
+import com.spring.Entity.RoleEntity;
 import com.spring.Entity.UserEntity;
+import com.spring.Entity.UserRoleEntity;
 import org.apache.shiro.crypto.hash.SimpleHash;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 
 /**
  * Created by Arabira on 2016/10/21.
  */
 @Service
 public class UserService {
-    @Autowired
+    @Resource
     private UserDao userDao;
+    @Resource
+    private RoleDao roleDao;
+    @Resource
+    private UserRoleDao userRoleDao;
 
-    public UserEntity  findByName(String userName) {
-        if (userName == null || userName.equals("")) {
+    /**
+     * @description 通过用户登录名称查找用户信息
+     * @param logName
+     * @return UserEntity
+     */
+    public UserEntity  findByName(String logName) {
+        if (logName == null || logName.equals("")) {
             return null;
         }
-        return userDao.findUser(userName);
+        return userDao.findUser(logName);
     }
 
+    /**
+     * @description 通过用户id查找用户信息
+     * @param userId
+     * @return UserEntity
+     */
     private UserEntity findById(Long userId) {
         return userDao.findById(userId);
     }
 
+    /**
+     * @description 添加用户
+     * @param userEntity
+     * @return String（状态信息）
+     */
     public String add(UserEntity userEntity) {
         if (userEntity == null || userEntity.getLoginName().equals("")
                 || userEntity.getPassWord().equals("")) {
@@ -52,39 +75,81 @@ public class UserService {
         }
     }
 
-    public boolean delete(UserEntity userEntity) {
-        if (userEntity == null || userEntity.getId().equals("")) {
-            return false;
-        }
-        UserEntity check = findById(userEntity.getId());
-        if (check == null) {
-            return false;
-        }
-        userDao.delUser(userEntity);
-        return true;
-    }
-
-    public String updateUserName(Long userId, String userName) {
-        UserEntity check = findById(userId);
-        if (check == null) {
-            return "无效操作";
-        }
+    /**
+     * @description 修改用户名称
+     * @param loginUserName
+     * @param userName
+     * @return boolean
+     */
+    public boolean updateUserName(String loginUserName, String userName) {
         if (userName.length() <= 0) {
-            return "名称不可为空";
+            return false;
         }
-        userDao.updateName(userId, userName);
-        return userName;
+        userDao.updateName(loginUserName, userName);
+        return true;
     }
 
-    public boolean updatePassword(Long userId, String oldPassword, String newPassword) {
-        if (userId == null || userId.equals("") || oldPassword.equals("") || newPassword.equals("")) {
+    /**
+     * @description 修改用户密码
+     * @param logName
+     * @param oldPassword
+     * @param newPassword
+     * @return boolean
+     */
+    public boolean updatePassword(String logName, String oldPassword, String newPassword) {
+        UserEntity check = findByName(logName);
+        if (null == check || oldPassword.isEmpty() || newPassword.isEmpty()) {
             return false;
         }
-        UserEntity check = findById(userId);
-        if (check == null) {
+        if (!oldPassword.equals(check.getPassWord()) || newPassword.length() < 7) {
             return false;
         }
-        userDao.updatePassword(userId, oldPassword, newPassword);
-        return true;
+        try{
+            SimpleHash oldpasswd = new SimpleHash("md5", oldPassword, "ccsi", 2);
+            SimpleHash newpasswd = new SimpleHash("md5", newPassword, "ccsi", 2);
+            userDao.updatePassword(check.getId(), oldpasswd.toHex(), newpasswd.toHex());
+            return true;
+        }
+        catch (Exception e) {
+            return true;
+        }
+    }
+
+    /**
+     * @decription 删除用户
+     * @param userId
+     * @param adminName
+     * @param password
+     * @return boolean
+     */
+    public boolean delete(long userId, String adminName, String password) {
+        try{
+            UserEntity adminEntity = findByName(adminName);
+            if (adminEntity.getPassWord().equals(password)) {
+                userDao.delUser(userId);
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+
+    /***
+     * @description 通过用户名查找用户权限
+     * @param userName
+     * @return RoleEntity
+     * @throws Exception
+     */
+    public RoleEntity findUserRoleByUserName(String userName) throws Exception {
+        if (userName.isEmpty()) {
+            throw new Exception();
+        }
+        UserRoleEntity userRoleEntity = userRoleDao.findUserAndRole(userName);
+        RoleEntity roleEntity = roleDao.findRole(userRoleEntity.getForRoleId());
+        return roleEntity;
     }
 }

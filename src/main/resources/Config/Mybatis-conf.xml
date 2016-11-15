@@ -13,5 +13,7 @@
     <!--扫描Mapper配置文件-->
     <mappers>
         <mapper resource="Mapper\UserMapper.xml"/>
+        <mapper resource="Mapper\RoleMapper.xml"/>
+        <mapper resource="Mapper\UserRoleMapper.xml"/>
     </mappers>
 </configuration>

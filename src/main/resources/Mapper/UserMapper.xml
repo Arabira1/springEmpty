@@ -13,7 +13,7 @@
     </resultMap>
 
     <select id="findUser" parameterType="String" resultMap="userEntity">
-        SELECT * FROM user WHERE login_username = #{userName};
+        SELECT * FROM user WHERE login_username = #{loginUserName};
     </select>
 
     <select id="findById" parameterType="Long" resultMap="userEntity">
@@ -24,12 +24,12 @@
         INSERT INTO user (u_id, login_username, user_name, password, salt, locked) VALUES (#{id}, #{loginName}, 'user', #{passWord}, #{primarySalt}, #{locked});
     </insert>
 
-    <delete id="delUser" parameterType="user">
+    <delete id="delUser" parameterType="String">
         DELETE FROM user WHERE u_id = #{id};
     </delete>
 
     <update id="updateName">
-        UPDATE user SET username = #{newName} WHERE u_id = #{id};
+        UPDATE user SET user_name = #{newName} WHERE login_username = #{loginName};
     </update>
 
     <update id="updatePassword">

@@ -43,7 +43,7 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <!--Mybatis更多配置的配置文件的位置-->
-        <property name="configLocation" value="classpath:Mybatis-conf.xml"/>
+        <property name="configLocation" value="classpath:Config/Mybatis-conf.xml"/>
     </bean>
 
     <!--因使用了更容易修改的Mapper方式进行数据访问，sqlSessionTemplate就不用使用了-->

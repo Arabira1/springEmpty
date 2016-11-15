@@ -22,7 +22,12 @@ public class RetryLimityMatcher extends HashedCredentialsMatcher {
         passwordRetryCache = cacheManager.getCache(cacheName);
     }
 
-    //对登录次数进行限制操作
+    /***
+     * @description 登录次数尝试限制
+     * @param token
+     * @param info
+     * @return Boolean
+     */
     @Override
     public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
         String username = (String)token.getPrincipal();
