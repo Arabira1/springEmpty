@@ -1,6 +1,5 @@
 package com.spring.Controller;
 
-import com.spring.Entity.RoleEntity;
 import com.spring.Entity.UserEntity;
 import com.spring.Service.UserService;
 import org.apache.shiro.SecurityUtils;
@@ -107,14 +106,14 @@ public class UserController {
     public Map update(UserEntity userEntity, HttpSession session, String oldPassword) {
         String loginName = (String) session.getAttribute("login");
         map = new HashMap();
-        if (!userEntity.getUserName().isEmpty()) {
+        if (!(userEntity.getUserName().length() == 0)) {
             boolean b = userService.updateUserName(loginName, userEntity.getUserName());
             if (b) {
                 map.put("status",true);
                 map.put("description","ok");
             }
         }
-        else if (!userEntity.getPassWord().isEmpty()) {
+        else if (!(userEntity.getPassWord().length() == 0)) {
             boolean b = userService.updatePassword(loginName, oldPassword, userEntity.getPassWord());
         }
         else {
